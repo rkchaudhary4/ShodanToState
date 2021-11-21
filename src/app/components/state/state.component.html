@@ -1,0 +1,41 @@
+<h1>{{ state }}</h1>
+<div
+  *ngIf="!loaded"
+  class="loader"
+  fxLayout="row"
+  fxLayoutAlign="center center"
+>
+  <img src="/assets/loader.gif" />
+</div>
+<div
+  class="cards"
+  *ngIf="loaded"
+  fxLayout="row wrap"
+  fxLayoutAlign="center center"
+>
+  <mat-card *ngFor="let facet of data | keyvalue" fxFlex="30" class="card">
+    <mat-card-title>{{ facet.key | titlecase }}</mat-card-title>
+    <mat-card-content>
+      <ng-container *ngIf="facet.key === 'vuln'; else noVuln">
+        <mat-nav-list>
+          <a
+            mat-list-item
+            *ngFor="let s of facet.value"
+            [routerLink]="['../../cve', s.value]"
+          >
+            <div style="width: 85%">{{ s.value }}</div>
+            <div>{{ s.count }}</div>
+          </a>
+        </mat-nav-list>
+      </ng-container>
+      <ng-template #noVuln>
+        <mat-list>
+          <mat-list-item *ngFor="let s of facet.value">
+            <div style="width: 85%">{{ s.value }}</div>
+            <div>{{ s.count }}</div>
+          </mat-list-item>
+        </mat-list>
+      </ng-template>
+    </mat-card-content>
+  </mat-card>
+</div>

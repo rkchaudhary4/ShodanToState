@@ -1,0 +1,145 @@
+<h2>Search for IPs</h2>
+<form
+  #search="ngForm"
+  fxLayout="row"
+  fxLayoutAlign="start center"
+  fxLayoutGap="2.5vw"
+  (ngSubmit)="getData(search.value)"
+>
+  <mat-form-field>
+    <mat-label>Keyword</mat-label>
+    <input
+      matInput
+      name="keyword"
+      #keyword="ngModel"
+      [(ngModel)]="payload.keyword"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Pincode</mat-label>
+    <input
+      matInput
+      name="pincode"
+      #pincode="ngModel"
+      [(ngModel)]="payload.pincode"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>CVE ID</mat-label>
+    <input
+      matInput
+      name="CVE_id"
+      #CVE_id="ngModel"
+      [(ngModel)]="payload.CVE_id"
+    />
+  </mat-form-field>
+  <button mat-raised-button [disabled]="!search.valid" type="submit">
+    Search
+  </button>
+</form>
+<div
+  *ngIf="loaded === false"
+  class="loader"
+  fxLayout="row"
+  fxLayoutAlign="center center"
+>
+  <img src="/assets/loader.gif" />
+</div>
+<mat-form-field *ngIf="loaded" class="filter">
+  <mat-label>Filter</mat-label>
+  <input matInput (keyup)="applyFilter($event)" placeholder="Ex. silver" />
+</mat-form-field>
+<table
+  mat-table
+  [style.display]="loaded ? 'table' : 'none'"
+  [dataSource]="data"
+  class="mat-elevation-z8"
+  multiTemplateDataRows
+>
+  <ng-container matColumnDef="ip_str">
+    <th mat-header-cell *matHeaderCellDef>IP Address</th>
+    <td mat-cell *matCellDef="let element">{{ element.ip_str }}</td>
+  </ng-container>
+  <ng-container matColumnDef="city">
+    <th mat-header-cell *matHeaderCellDef>City</th>
+    <td mat-cell *matCellDef="let element">{{ element.location.city }}</td>
+  </ng-container>
+  <ng-container matColumnDef="org">
+    <th mat-header-cell *matHeaderCellDef>Organisation</th>
+    <td mat-cell *matCellDef="let element">{{ element.org }}</td>
+  </ng-container>
+  <ng-container matColumnDef="deets">
+    <th mat-header-cell *matHeaderCellDef>Details</th>
+    <td mat-cell *matCellDef="let element">
+      <button
+        mat-raised-button
+        (click)="expandedElement = expandedElement === element ? null : element"
+      >
+        {{ expandedElement === element ? "Close Details" : "View Details" }}
+      </button>
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="expandedDetail">
+    <td mat-cell *matCellDef="let element" [attr.colspan]="cols.length">
+      <div
+        class="element-detail"
+        fxLayout="column"
+        fxLayoutGap="5px"
+        [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'"
+      >
+        <div>
+          Domains:
+          {{ element.domains.length > 0 ? element.domains : "Not Available" }}
+        </div>
+        <div>
+          Hostnames:
+          {{
+            element.hostnames.length > 0 ? element.hostnames : "Not Available"
+          }}
+        </div>
+        <div>
+          Location: {{ element.location.city ?? "City Not Available" }},
+          {{ element.location.region_code ?? "State Not Available" }},
+          {{ element.location.country_name ?? "Country Not Available" }}
+        </div>
+        <div>
+          Coordinates: Lat: {{ element.location.latitude }}, Long:
+          {{ element.location.longitude }}
+        </div>
+        <div>OS: {{ element.os ?? "Not Available" }}</div>
+        <div>Port: {{ element.port ?? "Port not available" }}</div>
+        <div>Vulnerabilites</div>
+        <mat-nav-list *ngIf="element.vulns.length > 0; else noVuln">
+          <a
+            mat-list-item
+            *ngFor="let v of element.vulns"
+            [routerLink]="['../cve', v]"
+          >
+            {{ v }}
+          </a>
+        </mat-nav-list>
+        <ng-template #noVuln>
+          <p>No Vulnerabilites are available</p>
+        </ng-template>
+      </div>
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="cols"></tr>
+  <tr
+    mat-row
+    *matRowDef="let element; columns: cols"
+    class="element-row"
+    [class.expanded-row]="expandedElement === element"
+  ></tr>
+  <tr
+    mat-row
+    *matRowDef="let row; columns: ['expandedDetail']"
+    class="detail-row"
+  ></tr>
+</table>
+<mat-paginator
+  [style.display]="loaded ? 'block' : 'none'"
+  class="page"
+  [pageSizeOptions]="[10, 20, 40, 50]"
+  showFirstLastButtons
+></mat-paginator>

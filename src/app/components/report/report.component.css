@@ -1,0 +1,12 @@
+p {
+  margin: 10px;
+}
+
+.nav-list {
+  width: 50%;
+}
+
+img {
+  height: auto;
+  object-fit: contain;
+}

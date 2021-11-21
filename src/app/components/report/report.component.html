@@ -1,0 +1,13 @@
+<p *ngIf="loaded === false">Loading Data...</p>
+<div fxLayout="row">
+  <mat-nav-list fxFlex="20">
+    <a
+      mat-list-item
+      [routerLink]="['../state', kv.key]"
+      *ngFor="let kv of stateDeets | keyvalue | sortObject"
+    >
+      {{ kv.key }}: {{ kv.value }}
+    </a>
+  </mat-nav-list>
+  <img fxFlex="50" *ngIf="img; let url" [src]="url" />
+</div>

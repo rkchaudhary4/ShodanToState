@@ -1,0 +1,11 @@
+h1 {
+  text-align: center;
+  margin: 10px;
+}
+.cards {
+  margin: 10px 2.5vw;
+}
+
+.card {
+  margin: 2.5vw 10px 0 0;
+}
