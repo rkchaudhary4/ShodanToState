@@ -16,16 +16,31 @@ export class StateComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe((params: any) => {
       this.state = params.state;
-      const opts = {
-        params: new HttpParams().set('state', params.state),
-      };
-      this.http
-        .get(`${environment.server}/state_report`, opts)
-        .subscribe((res: any) => {
-          this.data = res.facets;
-          console.log(res);
-          this.loaded = true;
-        });
+      this.getData('');
     });
+  }
+
+  getData(keyword: string): void {
+    const pams = {
+      state: this.state,
+    };
+    if (keyword && keyword.length > 0) {
+      Object.assign(pams, { keyword });
+    }
+    const opts = {
+      params: new HttpParams().appendAll(pams),
+    };
+    this.loaded = false;
+    this.http
+      .get(
+        `${environment.server}/${
+          this.state === 'India' ? 'india_report' : 'state_report'
+        }`,
+        opts
+      )
+      .subscribe((res: any) => {
+        this.data = res.facets;
+        this.loaded = true;
+      });
   }
 }

@@ -8,6 +8,25 @@
   <img src="/assets/loader.gif" />
 </div>
 <div
+  [style.display]="loaded ? 'initial' : 'none'"
+  class="filter"
+  fxLayout="row"
+  fxLayoutGap="2.5vw"
+  fxLayoutAlign="start center"
+>
+  <mat-form-field>
+    <mat-label>Keyword</mat-label>
+    <input matInput #keyword name="keyword" type="text" />
+  </mat-form-field>
+  <button
+    mat-raised-button
+    [disabled]="!keyword.value"
+    (click)="getData(keyword.value)"
+  >
+    Show Results
+  </button>
+</div>
+<div
   class="cards"
   *ngIf="loaded"
   fxLayout="row wrap"
@@ -26,6 +45,9 @@
             <div style="width: 85%">{{ s.value }}</div>
             <div>{{ s.count }}</div>
           </a>
+          <mat-list-item *ngIf="facet.value.length === 0"
+            >No {{ facet.key | titlecase }} available</mat-list-item
+          >
         </mat-nav-list>
       </ng-container>
       <ng-template #noVuln>
@@ -34,6 +56,9 @@
             <div style="width: 85%">{{ s.value }}</div>
             <div>{{ s.count }}</div>
           </mat-list-item>
+          <mat-list-item *ngIf="facet.value.length === 0"
+            >No {{ facet.key | titlecase }} available</mat-list-item
+          >
         </mat-list>
       </ng-template>
     </mat-card-content>

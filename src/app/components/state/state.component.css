@@ -9,3 +9,7 @@ h1 {
 .card {
   margin: 2.5vw 10px 0 0;
 }
+
+.filter {
+  margin: 10px 2.5vw;
+}

@@ -9,5 +9,10 @@
       {{ kv.key }}: {{ kv.value }}
     </a>
   </mat-nav-list>
-  <img fxFlex="50" *ngIf="img; let url" [src]="url" />
+  <div fxLayout="column" fxFlex="50" fxLayoutAlign="center center">
+    <img *ngIf="img; let url" [src]="url" />
+    <a mat-raised-button [routerLink]="['../state', 'India']"
+      >View Full Report</a
+    >
+  </div>
 </div>
