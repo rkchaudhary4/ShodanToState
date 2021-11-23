@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Funcs } from '../../Funcs/funcs';
 import { environment } from 'src/environments/environment';
@@ -15,13 +15,22 @@ export class ReportComponent implements OnInit {
   constructor(private http: HttpClient, funcs: Funcs) {}
 
   ngOnInit(): void {
-    this.fetchData();
+    this.fetchData('');
   }
 
-  async fetchData(): Promise<void> {
+  async fetchData(keyword: string): Promise<void> {
+    const obj = {};
+    if (keyword && keyword.length > 0) {
+      Object.assign(obj, { keyword });
+    }
+    const opts = {
+      params: new HttpParams().appendAll(obj),
+    };
     for (const i of [1, 2, 3, 4]) {
       const r: { [key: string]: any } = await lastValueFrom(
-        this.http.get(`${environment.server}/all_count_${i}`).pipe(retry(3))
+        this.http
+          .get(`${environment.server}/all_count_${i}`, opts)
+          .pipe(retry(3))
       );
       for (const key in r) {
         if (key !== 'page' && r.hasOwnProperty(key)) {

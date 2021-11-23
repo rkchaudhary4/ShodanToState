@@ -10,3 +10,7 @@ img {
   height: auto;
   object-fit: contain;
 }
+
+.filter {
+  margin-top: 10px;
+}
